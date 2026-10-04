@@ -1,0 +1,1 @@
+{"name":"neurohalo-local","private":true,"type":"module","scripts":{"check":"node --check dist/app.js && node --check dist/core.js","test":"node tests/frontend.test.mjs"}}

@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#eef3ee">
+<title>NeuroHalo</title>
+<style>
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%;overflow:hidden;font-family:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#11251e;
+    background:radial-gradient(900px 600px at 50% 40%,#ffffff 0,#eef3ee 60%,#e3ebe4 100%)}
+  .top-btns{position:fixed;top:20px;right:24px;display:flex;gap:10px;z-index:5}
+  .open.ghost{background:#fff;color:#1f6b4f;border:1.5px solid #1f6b4f;box-shadow:none;cursor:pointer;font-family:inherit}
+  .open{display:inline-flex;align-items:center;gap:8px;padding:11px 18px;border-radius:999px;
+    background:#1f6b4f;color:#fff;font-weight:650;font-size:.9rem;text-decoration:none;box-shadow:0 10px 30px #1f6b4f33}
+  .open svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+  .stage{height:100%;display:grid;place-items:center}
+  .phone-wrap{width:420px;height:880px;transform-origin:center center}
+  .phone{position:relative;width:420px;height:880px;border-radius:64px;background:#050909;padding:15px;
+    box-shadow:0 0 0 2px #26302f,0 50px 100px -20px #000c,0 0 0 #0000,inset 0 0 0 2px #313b3a}
+  .phone:before,.phone:after{content:"";position:absolute;width:4px;border-radius:3px;background:#26302f;left:-5px}
+  .phone:before{top:170px;height:70px}.phone:after{top:255px;height:70px}
+  .side-btn{position:absolute;right:-5px;top:210px;width:4px;height:100px;border-radius:3px;background:#26302f}
+  .screen{position:relative;width:390px;height:850px;border-radius:50px;overflow:hidden;background:#fff}
+  .island{position:absolute;top:11px;left:50%;transform:translateX(-50%);width:122px;height:35px;border-radius:20px;background:#000;z-index:3}
+  .statusbar{position:absolute;top:0;left:0;right:0;height:50px;display:flex;justify-content:space-between;align-items:center;
+    padding:6px 34px 0 40px;font-size:.92rem;font-weight:650;z-index:2;background:#fff}
+  .statusbar .icons{display:flex;gap:6px;align-items:center}
+  .statusbar svg{height:12px}
+  iframe{position:absolute;top:50px;left:0;width:390px;height:800px;border:0;background:#fff}
+  .home-indicator{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);width:134px;height:5px;border-radius:3px;background:#11251e;opacity:.85;z-index:3}
+</style>
+</head>
+<body>
+<div class="top-btns">
+<button class="open ghost" type="button" onclick="showPhoneQR()">Open on phone
+  <svg viewBox="0 0 24 24"><path d="M8 3h8a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1H8a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1zM11 18h2"/></svg></button>
+<a class="open" href="/?app=1#home">Open website
+  <svg viewBox="0 0 24 24"><path d="M14 4h6v6M20 4l-9 9M18 14v5H5V6h5"/></svg></a>
+</div>
+<div class="stage">
+  <div class="phone-wrap" id="wrap">
+    <div class="phone">
+      <span class="side-btn"></span>
+      <div class="screen">
+        <div class="island"></div>
+        <div class="statusbar">
+          <span id="clock">9:41</span>
+          <span class="icons">
+            <svg viewBox="0 0 18 12"><rect x="0" y="8" width="3" height="4" rx="1" fill="#11251e"/><rect x="5" y="5" width="3" height="7" rx="1" fill="#11251e"/><rect x="10" y="2.5" width="3" height="9.5" rx="1" fill="#11251e"/><rect x="15" y="0" width="3" height="12" rx="1" fill="#11251e"/></svg>
+            <svg viewBox="0 0 16 12"><path d="M8 11.5 5.6 9a3.4 3.4 0 0 1 4.8 0zM3.4 6.8a6.5 6.5 0 0 1 9.2 0l-1.4 1.4a4.5 4.5 0 0 0-6.4 0zM1 4.4a9.9 9.9 0 0 1 14 0l-1.4 1.4a7.9 7.9 0 0 0-11.2 0z" fill="#11251e"/></svg>
+            <svg viewBox="0 0 27 12"><rect x=".5" y=".5" width="22" height="11" rx="3" fill="none" stroke="#11251e" opacity=".5"/><rect x="2" y="2" width="17" height="8" rx="1.8" fill="#11251e"/><rect x="24" y="4" width="2" height="4" rx="1" fill="#11251e" opacity=".5"/></svg>
+          </span>
+        </div>
+        <iframe id="app" title="NeuroHalo app" src="/?app=1" allow="bluetooth; geolocation"></iframe>
+        <div class="home-indicator"></div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+  const frame = document.getElementById('app');
+  if (location.hash) frame.src = '/?app=1' + location.hash;
+  const tick = () => document.getElementById('clock').textContent =
+    new Date().toLocaleTimeString([], {hour: 'numeric', minute: '2-digit'}).replace(/\s?[AP]M$/i, '');
+  tick(); setInterval(tick, 10000);
+  const wrap = document.getElementById('wrap');
+  const fit = () => { const s = Math.min(1, (innerHeight - 40) / 880); wrap.style.transform = `scale(${s})`;
+    wrap.style.margin = `${(880 * s - 880) / 2}px ${(420 * s - 420) / 2}px`; };
+  addEventListener('resize', fit); fit();
+</script>
+<script src="/qrcode.js"></script>
+<script src="/phone.js"></script>
+</body>
+</html>

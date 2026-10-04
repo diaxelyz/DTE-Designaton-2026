@@ -1,0 +1,6 @@
+anthropic_key.txt
+data/
+cloudflared.exe
+.env
+*.zip
+__pycache__/
