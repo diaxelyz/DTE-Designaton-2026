@@ -114,27 +114,6 @@ A successful POST responds only after writing, flushing, and atomically replacin
 
 PATCH only accepts `location`, `head_region`, `user_classification`, and `user_notes`. Raw sensor fields are immutable. A 200 response confirms saved annotations. Demo edits do not call PATCH.
 
-## ESP32 work still required
-
-This package does **not** contain or claim to implement the device firmware, offline queue, sensor capture, or hardware validation. The intended firmware behavior is:
-
-1. Capture and buffer samples in RAM.
-2. Save a complete versioned JSON event to internal flash or microSD.
-3. When connected, POST that file to `http://<laptop-ip>:8000/api/events`.
-4. Check HTTP 200/201 **and** `persisted: true` for the matching event ID before removing it from pending storage.
-5. Retry network failures and server 5xx errors with backoff. Preserve rejected 4xx files and surface the error.
-6. Continue recording while Wi-Fi is absent and send queued files after reconnecting.
-
-The earlier streaming message (`t`, `ax`, `ay`, `az`, `gx`, `gy`, `gz`, `totalG`, `totalGyro`, `tilt`) is **not** the event-file contract. It lacks event grouping, explicit units, capture metadata, and synchronized incident time. Do not silently map it without confirming units and timestamp meaning.
-
-## Files to send next
-
-1. **ESP32 firmware:** `.ino` or the complete PlatformIO/ESP-IDF source folder, including headers and configuration. Redact Wi-Fi passwords and tokens.
-2. **Dependency/build configuration:** `platformio.ini`, `sdkconfig`, partition CSV, or Arduino board/library versions, as applicable. Storage partitions affect offline capacity.
-3. **An actual saved file or log:** one normal capture and, if available, one test event. Include the exact bytes sent over Wi-Fi. Describe acceleration/gyro units, timestamp units, sampling rate, and event boundaries.
-4. **Existing Python relay, if one exists:** `server.py` and `requirements.txt`, to preserve useful WebSocket or CSV behavior. A working replacement server is already included here.
-5. **Hardware notes:** sensor model, selected ranges, board revision, and whether storage is internal flash or microSD. A wiring photo helps if the firmware also needs bring-up work.
-
 To update the original hosted URL, the account owning that Site must provide editing access. Its project could not be accessed in this session. Running this local package does not change the hosted site.
 
 ## Verification
